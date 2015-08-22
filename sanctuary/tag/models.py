@@ -8,4 +8,4 @@ from account.models import CustomUser
 class Tag(models.Model):
     name = models.CharField(max_length=20)
     slug = AutoSlugField(populate_from="name")
-    moderators = models.ManyToManyField(CustomUser)
+    moderators = models.ManyToManyField(CustomUser, blank=True)
