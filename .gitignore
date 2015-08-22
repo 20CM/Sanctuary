@@ -1,3 +1,5 @@
+.idea
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -9,6 +11,7 @@ __pycache__/
 .Python
 env/
 build/
+Scripts/
 develop-eggs/
 dist/
 downloads/
@@ -55,3 +58,5 @@ docs/_build/
 
 # PyBuilder
 target/
+pip-selfcheck.json
+pyvenv.cfg
