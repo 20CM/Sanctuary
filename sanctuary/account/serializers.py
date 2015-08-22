@@ -18,6 +18,9 @@ class UserSerializer(serializers.ModelSerializer):
             username=validated_data['username']
         )
         user.set_password(validated_data['password'])
+        if not CustomUser.objects.count():
+            # The first user will be a superuser
+            user.is_superuser = True
         user.save()
         return user
 
