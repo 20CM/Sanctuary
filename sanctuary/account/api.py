@@ -26,6 +26,10 @@ class UserViewSet(viewsets.ModelViewSet):
 
     @detail_route(methods=['post'], url_path='change-password')
     def set_password(self, request, pk=None):
+        """
+        ---
+        serializer: PasswordSerializer
+        """
         user = self.get_object()
         serializer = PasswordSerializer(data=request.data)
         if serializer.is_valid():
@@ -38,6 +42,10 @@ class UserViewSet(viewsets.ModelViewSet):
 
     @list_route(methods=["post"])
     def obtain_auth_token(self, request):
+        """
+        ---
+        serializer: AuthTokenSerializer
+        """
         serializer = AuthTokenSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data['user']
