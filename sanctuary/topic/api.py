@@ -36,10 +36,11 @@ class TopicViewSet(CreateWithAuthorMixin, viewsets.ModelViewSet):
     queryset = Topic.objects.all()
     serializer_class = TopicSerializer
     permission_classes = (IsAuthenticatedOrReadOnly, IsSuperAdminOrAuthor)
+    filter_fields = ('author', 'tags')
 
 
 class ReplyViewSet(CreateWithAuthorMixin, viewsets.ModelViewSet):
     queryset = Reply.objects.all()
     serializer_class = ReplySerializer
     permission_classes = (IsAuthenticatedOrReadOnly, IsSuperAdminOrAuthor)
-
+    filter_fields = ('topic', 'author')
