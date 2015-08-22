@@ -6,7 +6,7 @@ from account.models import CustomUser
 
 
 class Tag(models.Model):
-    name = models.CharField(max_length=20)
+    name = models.CharField(max_length=20, unique=True, db_index=True)
     slug = AutoSlugField(populate_from="name")
     description = models.TextField(blank=True, default="")
     moderators = models.ManyToManyField(CustomUser, blank=True)
