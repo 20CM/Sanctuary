@@ -21,6 +21,7 @@ class UserSerializer(serializers.ModelSerializer):
         if not CustomUser.objects.count():
             # The first user will be a superuser
             user.is_superuser = True
+            user.is_staff = True
         user.save()
         return user
 
