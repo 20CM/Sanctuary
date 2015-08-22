@@ -14,7 +14,6 @@ router.register("topic", TopicViewSet)
 router.register("reply", ReplyViewSet)
 
 urlpatterns = [
-    url(r'^token/$', obtain_auth_token),
     url(r'^', include(router.urls)),
     url(r'^docs/', include('rest_framework_swagger.urls')),
 ]
