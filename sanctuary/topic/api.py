@@ -2,11 +2,25 @@ from rest_framework import status
 from rest_framework import viewsets
 from rest_framework.decorators import detail_route, list_route
 from rest_framework.response import Response
-from rest_framework.permissions import BasePermission, SAFE_METHODS
-from rest_framework.mixins import UpdateModelMixin
+from rest_framework.permissions import BasePermission, SAFE_METHODS, IsAuthenticatedOrReadOnly
 
 from .models import Topic, Reply
 from .serializers import TopicSerializer, ReplySerializer
+
+
+class CreateWithAuthorMixin(object):
+    """
+    Create a model instance.
+    """
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer, author=request.user)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+    def perform_create(self, serializer, author):
+        serializer.save(author=author)
 
 
 class IsSuperAdminOrAuthor(BasePermission):
@@ -18,13 +32,14 @@ class IsSuperAdminOrAuthor(BasePermission):
         return user.is_superuser or user == obj.author
 
 
-class TopicViewSet(viewsets.ModelViewSet):
+class TopicViewSet(CreateWithAuthorMixin, viewsets.ModelViewSet):
     queryset = Topic.objects.all()
     serializer_class = TopicSerializer
-    permission_classes=[IsSuperAdminOrAuthor]
+    permission_classes = (IsAuthenticatedOrReadOnly, IsSuperAdminOrAuthor)
 
 
-class ReplyViewSet(viewsets.ModelViewSet):
+class ReplyViewSet(CreateWithAuthorMixin, viewsets.ModelViewSet):
     queryset = Reply.objects.all()
     serializer_class = ReplySerializer
-    permission_classes=[IsSuperAdminOrAuthor]
+    permission_classes = (IsAuthenticatedOrReadOnly, IsSuperAdminOrAuthor)
+
