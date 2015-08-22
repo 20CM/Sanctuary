@@ -13,7 +13,7 @@ from tag.models import Tag
 class Topic(models.Model):
     title = models.CharField(max_length=50)
     slug = AutoSlugField(populate_from="title")
-    content = models.TextField()
+    content = models.TextField(blank=True)
     created = CreationDateTimeField()
     updated = ModificationDateTimeField()
     author = models.ForeignKey(CustomUser, related_name="topics")
