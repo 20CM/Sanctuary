@@ -8,10 +8,10 @@ from tag.api import TagViewSet
 from topic.api import TopicViewSet, ReplyViewSet
 
 router = routers.DefaultRouter()
-router.register("users", UserViewSet)
-router.register("tags", TagViewSet)
-router.register("topics", TopicViewSet)
-router.register("replies", ReplyViewSet)
+router.register("user", UserViewSet)
+router.register("tag", TagViewSet)
+router.register("topic", TopicViewSet)
+router.register("reply", ReplyViewSet)
 
 urlpatterns = [
     url(r'^token/$', obtain_auth_token),
