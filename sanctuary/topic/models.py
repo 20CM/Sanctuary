@@ -17,7 +17,7 @@ class Topic(models.Model):
     created = CreationDateTimeField()
     updated = ModificationDateTimeField()
     author = models.ForeignKey(CustomUser, related_name="topics")
-    tags = models.ManyToManyField(Tag, related_name="topics")
+    tags = models.ManyToManyField(Tag, related_name="topics", blank=True)
 
 
 class Reply(models.Model):
