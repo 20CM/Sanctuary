@@ -8,7 +8,10 @@ from .models import Topic, Reply
 class TopicSerializer(serializers.ModelSerializer):
     class Meta:
         model = Topic
-        read_only_fields = ('created', 'updated', 'author')
+        read_only_fields = (
+            'created', 'updated', 'last_update',
+            'author', 'replies_count',
+        )
 
 
 class ReplySerializer(serializers.ModelSerializer):

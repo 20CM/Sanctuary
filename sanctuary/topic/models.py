@@ -1,4 +1,7 @@
 from django.db import models
+from django.utils import timezone
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 from django_extensions.db.fields import (
     AutoSlugField,
@@ -16,8 +19,11 @@ class Topic(models.Model):
     content = models.TextField(blank=True)
     created = CreationDateTimeField()
     updated = ModificationDateTimeField()
+    last_update = models.DateTimeField(default=timezone.now)
     author = models.ForeignKey(CustomUser, related_name="topics")
     tags = models.ManyToManyField(Tag, related_name="topics", blank=True)
+
+    replies_count = models.IntegerField(default=0)
 
 
 class Reply(models.Model):
@@ -26,3 +32,12 @@ class Reply(models.Model):
     content = models.TextField()
     created = CreationDateTimeField()
     updated = ModificationDateTimeField()
+
+
+@receiver(post_save, sender=Reply)
+def post_created_callback(sender, instance, created, **kwargs):
+    if created:
+        return
+    instance.topic.replies_count += 1
+    instance.topic.last_update = instance.created
+    instance.topic.save()
