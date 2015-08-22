@@ -21,6 +21,7 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
     serializer_class = UserSerializer
     permission_classes=[IsSuperAdminOrSelfPermission]
+    filter_fields = ('username',)
 
     @detail_route(methods=['post'], url_path='change-password')
     def set_password(self, request, pk=None):
