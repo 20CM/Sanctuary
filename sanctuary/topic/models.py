@@ -26,6 +26,15 @@ class Topic(models.Model):
     replies_count = models.IntegerField(default=0)
 
 
+@receiver(post_save, sender=Topic)
+def update_tag_info(sender, instance, created, **kwargs):
+    if created:
+        return
+    for tag in instance.tags:
+        tag.topics_count += 1
+        tag.save()
+
+
 class Reply(models.Model):
     topic = models.ForeignKey(Topic, related_name="replies")
     author = models.ForeignKey(CustomUser, related_name="replies")

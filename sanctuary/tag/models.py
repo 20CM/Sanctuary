@@ -10,3 +10,5 @@ class Tag(models.Model):
     slug = AutoSlugField(populate_from="name")
     description = models.TextField(blank=True, default="")
     moderators = models.ManyToManyField(CustomUser, blank=True)
+
+    topics_count = models.IntegerField(default=0)
