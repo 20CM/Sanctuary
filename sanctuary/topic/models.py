@@ -35,7 +35,7 @@ class Reply(models.Model):
 
 
 @receiver(post_save, sender=Reply)
-def post_created_callback(sender, instance, created, **kwargs):
+def update_topic_info(sender, instance, created, **kwargs):
     if created:
         return
     instance.topic.replies_count += 1
