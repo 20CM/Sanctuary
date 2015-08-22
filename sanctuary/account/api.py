@@ -38,7 +38,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
     @list_route(methods=["post"])
     def obtain_auth_token(self, request):
-        serializer = self.serializer_class(data=request.data)
+        serializer = AuthTokenSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data['user']
         token, created = Token.objects.get_or_create(user=user)
