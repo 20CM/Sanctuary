@@ -23,5 +23,6 @@ class Topic(models.Model):
 class Reply(models.Model):
     topic = models.ForeignKey(Topic, related_name="replies")
     author = models.ForeignKey(CustomUser, related_name="replies")
+    content = models.TextField()
     created = CreationDateTimeField()
     updated = ModificationDateTimeField()
