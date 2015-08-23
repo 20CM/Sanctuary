@@ -10,11 +10,5 @@ class NotificationSerializer(serializers.ModelSerializer):
         model = Notification
 
 
-class MarkNotificationAsReadConfirmSerializer(serializers.Serializer):
-    username = serializers.CharField(max_length=200)
-
-
-class MarkNotificationsOfTopicSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Notification
-        fields = ('topic', )
+class MarkNotificationsAsReadSerializer(serializers.Serializer):
+    topic = serializers.IntegerField(required=False, allow_null=True)

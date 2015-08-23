@@ -6,8 +6,7 @@ from rest_framework.permissions import BasePermission
 
 from .models import Notification
 from .serializers import (
-    NotificationSerializer, MarkNotificationAsReadConfirmSerializer,
-    MarkNotificationsOfTopicSerializer
+    NotificationSerializer, MarkNotificationsAsReadSerializer
 )
 
 
@@ -33,25 +32,24 @@ class NotificationViewSet(ReadOnlyModelViewSet):
         serializer: MarkNotificationAsReadConfirmSerializer
         """
         notification = self.get_object()
-        serializer = MarkNotificationAsReadConfirmSerializer(data=request.data)
-        if serializer.is_valid() and serializer.data['username'] == request.user.username:
-            notification.is_read = True
-            notification.save()
-            return Response({'status': 'marked'})
-        else:
-            return Response(serializer.errors,
-                            status=status.HTTP_400_BAD_REQUEST)
+        notification.is_read = True
+        notification.save()
+        return Response({'status': 'marked'})
 
     @list_route(methods=["post"])
     def mark_as_read(self, request):
         """
         ---
-        serializer: MarkNotificationsOfTopicSerializer
+        serializer: MarkNotificationsAsReadSerializer
         """
 
-        serializer = MarkNotificationsOfTopicSerializer(data=request.data)
+        serializer = MarkNotificationsAsReadSerializer(data=request.data)
         if serializer.is_valid():
-            notifications = self.get_queryset().filter(topic=serializer.data['topic']).unread()
+            if serializer.data["topic"]:
+                notifications = self.get_queryset().filter(topic_id=serializer.data["topic"])
+            else:
+                notifications = self.get_queryset().all()
+            notifications = notifications.unread()
             count = notifications.count()
             notifications.update(is_read=True)
             return Response({'status': 'marked {} notifications'.format(count)})
