@@ -27,10 +27,6 @@ class NotificationViewSet(ReadOnlyModelViewSet):
 
     @detail_route(methods=['post'])
     def read(self, request, pk=None):
-        """
-        ---
-        serializer: MarkNotificationAsReadConfirmSerializer
-        """
         notification = self.get_object()
         notification.is_read = True
         notification.save()
