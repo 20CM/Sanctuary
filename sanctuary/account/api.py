@@ -1,4 +1,4 @@
-from rest_framework import status, viewsets
+from rest_framework import status
 from rest_framework.decorators import detail_route, list_route
 from rest_framework.response import Response
 from rest_framework.permissions import BasePermission, SAFE_METHODS
@@ -6,6 +6,7 @@ from rest_framework.authtoken.serializers import AuthTokenSerializer
 from rest_framework.authtoken.models import Token
 
 from .models import CustomUser
+from sanctuary.viewsets import NoDestroyModelViewSet
 from .serializers import UserSerializer, PasswordSerializer
 
 
@@ -18,7 +19,7 @@ class IsSuperAdminOrSelfPermission(BasePermission):
         return user.is_superuser or user == obj
 
 
-class UserViewSet(viewsets.ModelViewSet):
+class UserViewSet(NoDestroyModelViewSet):
     queryset = CustomUser.objects.all()
     serializer_class = UserSerializer
     permission_classes=[IsSuperAdminOrSelfPermission]

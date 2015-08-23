@@ -1,7 +1,7 @@
-from rest_framework import viewsets
 from rest_framework.permissions import SAFE_METHODS, BasePermission
 
 from .models import Tag
+from sanctuary.viewsets import NoDestroyModelViewSet
 from .serializers import TagSerializer
 
 
@@ -17,7 +17,7 @@ class IsAdminUserOrModerator(BasePermission):
         return request.user and (request.user.is_staff or request.user in obj.moderators)
 
 
-class TagViewSet(viewsets.ModelViewSet):
+class TagViewSet(NoDestroyModelViewSet):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
     permission_classes=[IsAdminUserOrModerator]

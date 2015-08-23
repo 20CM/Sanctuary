@@ -1,10 +1,9 @@
 from rest_framework import status
-from rest_framework import viewsets
-from rest_framework.decorators import detail_route, list_route
 from rest_framework.response import Response
 from rest_framework.permissions import BasePermission, SAFE_METHODS, IsAuthenticatedOrReadOnly
 
 from .models import Topic, Reply
+from sanctuary.viewsets import NoDestroyModelViewSet
 from .serializers import TopicSerializer, ReplySerializer
 
 
@@ -32,14 +31,14 @@ class IsSuperAdminOrAuthor(BasePermission):
         return user.is_superuser or user == obj.author
 
 
-class TopicViewSet(CreateWithAuthorMixin, viewsets.ModelViewSet):
+class TopicViewSet(CreateWithAuthorMixin, NoDestroyModelViewSet):
     queryset = Topic.objects.all()
     serializer_class = TopicSerializer
     permission_classes = (IsAuthenticatedOrReadOnly, IsSuperAdminOrAuthor)
     filter_fields = ('author', 'tags')
 
 
-class ReplyViewSet(CreateWithAuthorMixin, viewsets.ModelViewSet):
+class ReplyViewSet(CreateWithAuthorMixin, NoDestroyModelViewSet):
     queryset = Reply.objects.all()
     serializer_class = ReplySerializer
     permission_classes = (IsAuthenticatedOrReadOnly, IsSuperAdminOrAuthor)
