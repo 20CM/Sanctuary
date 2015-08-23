@@ -16,7 +16,6 @@ from tag.models import Tag
 class Topic(models.Model):
     title = models.CharField(max_length=50)
     slug = AutoSlugField(populate_from="title")
-    content = models.TextField(blank=True)
     created = CreationDateTimeField()
     updated = ModificationDateTimeField()
     last_update = models.DateTimeField(default=timezone.now)
