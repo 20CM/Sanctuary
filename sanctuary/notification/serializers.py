@@ -8,3 +8,7 @@ from .models import Notification
 class NotificationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Notification
+
+
+class MarkNotificationAsReadConfirmSerializer(serializers.Serializer):
+    username = serializers.CharField(max_length=200)

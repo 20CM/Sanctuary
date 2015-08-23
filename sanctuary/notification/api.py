@@ -1,8 +1,11 @@
+from rest_framework import status
+from rest_framework.decorators import detail_route, list_route
+from rest_framework.response import Response
 from rest_framework.viewsets import ReadOnlyModelViewSet
 from rest_framework.permissions import BasePermission
 
 from .models import Notification
-from .serializers import NotificationSerializer
+from .serializers import NotificationSerializer, MarkNotificationAsReadConfirmSerializer
 
 
 class IsReceiver(BasePermission):
@@ -19,3 +22,35 @@ class NotificationViewSet(ReadOnlyModelViewSet):
     def get_queryset(self):
         user = self.request.user
         return Notification.objects.receiver(user)
+
+    @detail_route(methods=['post'])
+    def read(self, request, pk=None):
+        """
+        ---
+        serializer: MarkNotificationAsReadConfirmSerializer
+        """
+        notification = self.get_object()
+        serializer = MarkNotificationAsReadConfirmSerializer(data=request.data)
+        if serializer.is_valid() and serializer.data['username'] == request.user.username:
+            notification.is_read = True
+            notification.save()
+            return Response({'status': 'marked'})
+        else:
+            return Response(serializer.errors,
+                            status=status.HTTP_400_BAD_REQUEST)
+
+    @list_route(methods=["post"])
+    def mark_as_read(self, request):
+        """
+        ---
+        serializer: MarkNotificationAsReadConfirmSerializer
+        """
+
+        serializer = MarkNotificationAsReadConfirmSerializer(data=request.data)
+        if serializer.is_valid() and serializer.data['username'] == request.user.username:
+            notifications = self.get_queryset()
+            notifications.update(is_read=True)
+            return Response({'status': 'marked'})
+        else:
+            return Response(serializer.errors,
+                            status=status.HTTP_400_BAD_REQUEST)
