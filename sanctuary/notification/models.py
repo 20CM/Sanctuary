@@ -17,3 +17,6 @@ class Notification(TimeStampedModel):
     is_read = models.BooleanField(default=False)
 
     objects = NotificationQuerySet.as_manager()
+
+    class Meta:
+        unique_together = ("receiver", "reply")

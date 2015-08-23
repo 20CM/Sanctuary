@@ -17,12 +17,18 @@ class Topic(TimeStampedModel):
 
     replies_count = models.IntegerField(default=0)
 
+    class Meta:
+        unique_together = ("title", "author")
+
 
 class Reply(TimeStampedModel):
     topic = models.ForeignKey(Topic, related_name="replies")
     index = models.IntegerField(default=0)
     author = models.ForeignKey(CustomUser, related_name="replies")
     content = models.TextField()
+
+    class Meta:
+        unique_together = (("topic", "index"), ("topic", "content", "author"))
 
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):

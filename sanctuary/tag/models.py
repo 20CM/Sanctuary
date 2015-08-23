@@ -5,7 +5,6 @@ from django.dispatch import receiver
 from django_extensions.db.fields import AutoSlugField
 
 from account.models import CustomUser
-from topic.models import Topic
 
 
 class Tag(models.Model):
@@ -17,7 +16,7 @@ class Tag(models.Model):
     topics_count = models.IntegerField(default=0)
 
 
-@receiver(post_save, sender=Topic)
+@receiver(post_save, sender="topic.Topic")
 def update_tag_info(sender, instance, created, **kwargs):
     if not created:
         return True
