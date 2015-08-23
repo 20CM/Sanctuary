@@ -45,6 +45,8 @@ INSTALLED_APPS = (
     'rest_framework_swagger',
     'django_extensions',
 
+    'debug_toolbar',
+
     'account',
     'topic',
     'tag',
