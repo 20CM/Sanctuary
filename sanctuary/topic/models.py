@@ -3,22 +3,17 @@ from django.utils import timezone
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
-from django_extensions.db.fields import (
-    AutoSlugField,
-    CreationDateTimeField,
-    ModificationDateTimeField
-)
+from model_utils.models import TimeStampedModel
+from django_extensions.db.fields import AutoSlugField
 
 from account.models import CustomUser
 from tag.models import Tag
 
 
-class Topic(models.Model):
+class Topic(TimeStampedModel):
     title = models.CharField(max_length=50)
     slug = AutoSlugField(populate_from="title")
-    created = CreationDateTimeField()
-    updated = ModificationDateTimeField()
-    last_update = models.DateTimeField(default=timezone.now)
+    last_activity = models.DateTimeField(default=timezone.now)
     author = models.ForeignKey(CustomUser, related_name="topics")
     tags = models.ManyToManyField(Tag, related_name="topics", blank=True)
 
@@ -27,25 +22,25 @@ class Topic(models.Model):
 
 @receiver(post_save, sender=Topic)
 def update_tag_info(sender, instance, created, **kwargs):
-    if created:
+    if not created:
         return
     for tag in instance.tags:
         tag.topics_count += 1
         tag.save()
 
 
-class Reply(models.Model):
+class Reply(TimeStampedModel):
     topic = models.ForeignKey(Topic, related_name="replies")
+    index = models.IntegerField(default=0)
     author = models.ForeignKey(CustomUser, related_name="replies")
     content = models.TextField()
-    created = CreationDateTimeField()
-    updated = ModificationDateTimeField()
 
-
-@receiver(post_save, sender=Reply)
-def update_topic_info(sender, instance, created, **kwargs):
-    if created:
-        return
-    instance.topic.replies_count += 1
-    instance.topic.last_update = instance.created
-    instance.topic.save()
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
+        if not self.index:
+            topic = self.topic
+            topic.replies_count += 1
+            topic.last_activity = self.created
+            topic.save()
+            self.index = self.topic.replies_count
+        return super().save(force_insert, force_update, using, update_fields)
