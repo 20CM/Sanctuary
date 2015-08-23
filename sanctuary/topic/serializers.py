@@ -10,11 +10,11 @@ class TopicSerializer(serializers.ModelSerializer):
         model = Topic
         read_only_fields = (
             'created', 'modified', 'last_activity',
-            'author', 'replies_count',
+            'author', 'replies_count', 'id'
         )
 
 
 class ReplySerializer(serializers.ModelSerializer):
     class Meta:
         model = Reply
-        read_only_fields = ('created', 'modified', 'author', 'index')
+        read_only_fields = ('created', 'modified', 'author', 'index', 'content_html', 'id')

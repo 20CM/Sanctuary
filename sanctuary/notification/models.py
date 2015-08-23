@@ -20,3 +20,13 @@ class Notification(TimeStampedModel):
 
     class Meta:
         unique_together = ("receiver", "reply")
+
+    @classmethod
+    def create_notifications_from_reply(cls, reply, mentions):
+        for user in mentions.values():
+            cls.objects.get_or_create(
+                sender=reply.author,
+                topic=reply.topic,
+                reply=reply,
+                receiver=user
+            )

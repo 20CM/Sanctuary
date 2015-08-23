@@ -3,4 +3,5 @@ from django.contrib.auth.models import AbstractUser
 
 
 class CustomUser(AbstractUser, models.Model):
-    pass
+    def get_absolute_url(self):
+        return "/user/{}".format(self.username)

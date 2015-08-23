@@ -65,12 +65,12 @@ class BlockGrammar(mistune.BlockGrammar):
 
 class BlockLexer(mistune.BlockLexer):
 
-    default_features = copy.copy(mistune.BlockLexer.default_features)
-    default_features.insert(0, 'audio_link')
-    default_features.insert(0, 'image_link')
-    default_features.insert(0, 'video_link')
-    default_features.insert(0, 'youtube')
-    default_features.insert(0, 'vimeo')
+    default_rules = copy.copy(mistune.BlockLexer.default_rules)
+    default_rules.insert(0, 'audio_link')
+    default_rules.insert(0, 'image_link')
+    default_rules.insert(0, 'video_link')
+    default_rules.insert(0, 'youtube')
+    default_rules.insert(0, 'vimeo')
 
     def __init__(self, rules=None, **kwargs):
         if rules is None:
