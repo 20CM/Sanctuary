@@ -1,7 +1,5 @@
 from django.db import models
 from django.utils import timezone
-from django.db.models.signals import post_save
-from django.dispatch import receiver
 
 from model_utils.models import TimeStampedModel
 from django_extensions.db.fields import AutoSlugField
@@ -18,15 +16,6 @@ class Topic(TimeStampedModel):
     tags = models.ManyToManyField(Tag, related_name="topics", blank=True)
 
     replies_count = models.IntegerField(default=0)
-
-
-@receiver(post_save, sender=Topic)
-def update_tag_info(sender, instance, created, **kwargs):
-    if not created:
-        return
-    for tag in instance.tags:
-        tag.topics_count += 1
-        tag.save()
 
 
 class Reply(TimeStampedModel):
