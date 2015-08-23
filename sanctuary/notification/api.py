@@ -5,7 +5,10 @@ from rest_framework.viewsets import ReadOnlyModelViewSet
 from rest_framework.permissions import BasePermission
 
 from .models import Notification
-from .serializers import NotificationSerializer, MarkNotificationAsReadConfirmSerializer
+from .serializers import (
+    NotificationSerializer, MarkNotificationAsReadConfirmSerializer,
+    MarkNotificationsOfTopicSerializer
+)
 
 
 class IsReceiver(BasePermission):
@@ -43,14 +46,15 @@ class NotificationViewSet(ReadOnlyModelViewSet):
     def mark_as_read(self, request):
         """
         ---
-        serializer: MarkNotificationAsReadConfirmSerializer
+        serializer: MarkNotificationsOfTopicSerializer
         """
 
-        serializer = MarkNotificationAsReadConfirmSerializer(data=request.data)
-        if serializer.is_valid() and serializer.data['username'] == request.user.username:
-            notifications = self.get_queryset()
+        serializer = MarkNotificationsOfTopicSerializer(data=request.data)
+        if serializer.is_valid():
+            notifications = self.get_queryset().filter(topic=serializer.data['topic']).unread()
+            count = notifications.count()
             notifications.update(is_read=True)
-            return Response({'status': 'marked'})
+            return Response({'status': 'marked {} notifications'.format(count)})
         else:
             return Response(serializer.errors,
                             status=status.HTTP_400_BAD_REQUEST)
