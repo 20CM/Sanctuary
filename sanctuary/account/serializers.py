@@ -8,8 +8,8 @@ from .models import CustomUser
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ('id', 'email', 'username', 'is_active', 'date_joined', "password")
-        read_only_fields = ('id', 'is_active', 'date_joined')
+        fields = ('id', 'email', 'username', 'is_active', 'date_joined', "password", "is_staff")
+        read_only_fields = ('id', 'is_active', 'date_joined', 'is_staff')
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
@@ -24,6 +24,12 @@ class UserSerializer(serializers.ModelSerializer):
             user.is_staff = True
         user.save()
         return user
+
+
+class SimplifiedUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ('id', 'email', 'username')
 
 
 class RegisterSerializer(serializers.ModelSerializer):

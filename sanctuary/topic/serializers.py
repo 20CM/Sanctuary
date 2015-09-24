@@ -2,12 +2,12 @@
 
 from rest_framework import serializers
 
-from account.serializers import UserSerializer
+from account.serializers import SimplifiedUserSerializer
 from .models import Topic, Reply
 
 
 class TopicSerializer(serializers.ModelSerializer):
-    author = UserSerializer(read_only=True)
+    author = SimplifiedUserSerializer(read_only=True)
 
     class Meta:
         model = Topic
@@ -18,7 +18,7 @@ class TopicSerializer(serializers.ModelSerializer):
 
 
 class ReplySerializer(serializers.ModelSerializer):
-    author = UserSerializer(read_only=True)
+    author = SimplifiedUserSerializer(read_only=True)
 
     class Meta:
         model = Reply
